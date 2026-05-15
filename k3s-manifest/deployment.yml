@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: swiggy-app
-        image: manlineroot12/swiggy-app:latest
+        image: iampooji/swiggy:latest
 
         env:
         - name: HOST
