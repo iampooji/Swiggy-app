@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: swiggy-app
+  namespace: poojitha
   labels:
     app: swiggy-app
 spec:
@@ -14,10 +15,9 @@ spec:
       labels:
         app: swiggy-app
     spec:
-      terminationGracePeriodSeconds: 30
       containers:
       - name: swiggy-app
-        image: manlineroot12/swiggy-app:latest
-        imagePullPolicy: "Always"
+        image: iampooji/swiggy:latest
+        imagePullPolicy: Always
         ports:
-        - containerPort: 3000
+        - containerPort: 5000

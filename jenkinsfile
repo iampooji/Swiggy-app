@@ -56,6 +56,19 @@ pipeline {
             }
         }
 
+        stage('Deploy to Kubernetes') {
+            steps {
+                dir('k3s-manifest') {
+                    sh '''
+                        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+                        
+                        kubectl apply -f deployment.yaml
+                        kubectl apply -f service.yaml
+                    '''
+                }
+            }
+        }
+
     }
 
     post {
