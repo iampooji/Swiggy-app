@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk17'
-        nodejs 'node20' // Node.js 20 LTS
+        jdk 'jdk21'
+        nodejs 'node20'
     }
 
     environment {
@@ -19,72 +19,41 @@ pipeline {
 
         stage('Checkout from Git') {
             steps {
-                git branch: 'master', url: 'https://github.com/smita1988/project-swiggy.git'
+                git branch: 'master',
+                    url: 'https://github.com/iampooji/Swiggy-app.git'
             }
         }
-
+        
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonar') {
-                    sh """
+                    sh '''
                         $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectKey=Swiggy \
-                        -Dsonar.projectName=Swiggy \
+                        -Dsonar.projectKey=panigrahan_web_app \
+                        -Dsonar.projectName=panigrahan_web_app \
                         -Dsonar.sources=.
-                    """
+                    '''
                 }
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-                script {
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh "npm install"
-            }
-        }
-
-        stage('Docker Build & Push') {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'docker-credentails', url: '') {
-                        sh """
-                            docker build -t swiggy .
-                            docker tag swiggy iamsubbu3/swiggy:latest
-                            docker push iamsubbu3/swiggy:latest
-                        """
-                    }
-                }
-            }
-        }
-
-        stage('Deploy to Container') {
-            steps {
-                sh '''
-                    docker rm -f swiggy || true
-                    docker run -d --name swiggy -p 3000:3000 iamsubbu3/swiggy:latest
-                '''
-            }
-        }
     }
 
     post {
         always {
-            echo "Pipeline execution completed!"
-        }
-        failure {
-            echo "Pipeline failed. Check logs for details."
+            echo 'Pipeline execution completed!'
         }
         success {
-            echo "Swiggy App deployed successfully!"
+            echo 'Panigrahan Web App pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check Console Output.'
         }
     }
 }
