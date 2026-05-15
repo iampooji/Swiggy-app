@@ -47,7 +47,7 @@ pipeline {
             steps {
                 withDockerRegistry(credentialsId: 'docker-credentials', url: '') {
                     sh '''
-                        docker build -t swiggy:v1.0.1
+                        docker build -t swiggy:v1.0.1 .
                         docker tag swiggy:v1.0.1 iampooji/swiggy:v1.0.1
                         docker push iampooji/swiggy:v1.0.1
 
